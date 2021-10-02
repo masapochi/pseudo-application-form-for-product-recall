@@ -1,23 +1,24 @@
 <template>
-  <Hello />
+  <Header />
+
+  <div class="container py-5">
+    <Index />
+  </div>
+
+  <footer class="py-3 bg-dark text-center text-white">
+    <small>&copy; All Right Reserved.</small>
+  </footer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/runtime-core";
-import Hello from "./pages/Hello.vue";
+import { defineComponent, ref } from "vue";
+import Index from "./pages/Index.vue";
+import Header from "./components/layout/Header.vue";
+import { PICKUP_TIMES } from "./consts";
 
 export default defineComponent({
-  components: { Hello },
+  components: { Header, Index },
 });
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="scss"></style>
