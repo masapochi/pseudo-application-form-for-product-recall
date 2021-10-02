@@ -7,7 +7,7 @@ export const PICKUP_TIMES = Object.freeze([
   { name: "19～21時" },
 ]);
 
-export const USER_PROFILE = {
+const PROFILE = {
   name: "",
   zip: "",
   address: "",
@@ -16,7 +16,7 @@ export const USER_PROFILE = {
   verify_email: "",
 };
 
-export const RECALL_INFO = {
+const RECALL = {
   purchased_date: "",
   purchased_shop: "",
   situation: "",
@@ -24,7 +24,7 @@ export const RECALL_INFO = {
   pickup_time: PICKUP_TIMES[0].name,
 };
 
-export const ITEM_LIST = [
+const ITEMS = [
   {
     color: "電球色",
     code: "",
@@ -83,3 +83,9 @@ export const ITEM_LIST = [
     purchased_count: 0,
   },
 ];
+
+export const INITIAL_FORM = {
+  ...PROFILE,
+  ...RECALL,
+  items: ITEMS,
+};

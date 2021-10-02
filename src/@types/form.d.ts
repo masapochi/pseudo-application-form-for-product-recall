@@ -1,4 +1,4 @@
-type ItemType = {
+type Item = {
   purchased_count: number;
   model: string;
   color: string;
@@ -6,19 +6,17 @@ type ItemType = {
   code: string;
 };
 
-type ProfileType = {
+type Form = {
+  items: Item[];
+  pickup_date: string;
+  pickup_time: string;
+  purchased_date: string;
+  purchased_shop: string;
+  situation: string;
   name: string;
   zip: string;
   address: string;
   tel: string;
   email: string;
   verify_email: string;
-};
-
-type RecallInfoType = {
-  pickup_date: string;
-  pickup_time: string;
-  purchased_date: string;
-  purchased_shop: string;
-  situation: string;
 };
