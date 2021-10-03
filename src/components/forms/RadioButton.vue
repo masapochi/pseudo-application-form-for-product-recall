@@ -7,6 +7,7 @@
       :name="name"
       :value="value"
       :checked="checked"
+      v-bind="$attrs"
       @change="handleChange"
     />
     <label :for="id" class="form-check-label">{{ label }}</label>
@@ -21,7 +22,6 @@ export default defineComponent({
   name: "RadioButton",
   components: {},
   props: {
-    // modelValue: { type: null },
     value: { type: String },
     name: { type: String, required: true },
     label: { type: String, required: true },

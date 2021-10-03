@@ -183,14 +183,11 @@ export default defineComponent({
     FormBody,
   },
   setup(props, { emit, attrs, slots }) {
-    const today = new Date();
-
     const {
       values: form,
       handleSubmit,
       errors,
       meta,
-      setFieldValue,
     } = useForm<Form>({
       initialValues: INITIAL_FORM,
       validationSchema,
@@ -199,7 +196,6 @@ export default defineComponent({
     const isItemCountFilled = computed(() =>
       form.items.some((item: Item) => item.purchased_count > 0)
     );
-
     const isPickupDateFilled = computed(() => !!form.pickup_date);
     const isRecallInfoFilled = computed(() => !!form.purchased_shop);
 
@@ -207,12 +203,10 @@ export default defineComponent({
       console.log(JSON.stringify(values, null, 2));
     });
 
+    const today = new Date();
     const pickupDateConfig = {
       minDate: today.setDate(today.getDate() + 5),
     };
-
-    const formHeadingClass = "col-12 col-md-3 h5";
-
     const purchasedDateConfig = {
       defaultDate: "",
       maxDate: today,
@@ -225,9 +219,11 @@ export default defineComponent({
       ],
     };
 
+    const formHeadingClass = "col-12 col-md-3 h5";
+
     return {
       ...toRefs(form),
-      pickupTimes: computed(() => PICKUP_TIMES),
+      pickupTimes: PICKUP_TIMES,
       isItemCountFilled,
       isRecallInfoFilled,
       isPickupDateFilled,
@@ -245,7 +241,6 @@ export default defineComponent({
 <style lang="scss">
 .flatpicker-container input[readonly] {
   background-color: #fff;
-  // border: none;
 }
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;

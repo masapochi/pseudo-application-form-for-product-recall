@@ -11,7 +11,7 @@
       :config="config"
       :placeholder="placeholder"
     />
-    <div class="input-group-append">
+    <div class="input-group-append" v-if="isClearable">
       <button
         class="btn btn-warning"
         :disabled="!isClearable"
@@ -36,7 +36,7 @@ import { useField } from "vee-validate";
 import flatPickr from "vue-flatpickr-component";
 import { Japanese } from "flatpickr/dist/l10n/ja.js";
 import "flatpickr/dist/flatpickr.css";
-// import "flatpickr/dist/plugins/monthSelect/style.css";
+import "flatpickr/dist/plugins/monthSelect/style.css";
 
 export default defineComponent({
   components: { flatPickr },
@@ -58,9 +58,7 @@ export default defineComponent({
       setValue,
     } = useField(name, undefined, { initialValue: value });
 
-    const isClearable = computed(() => {
-      return !!inputValue.value;
-    });
+    const isClearable = computed(() => !!inputValue.value);
 
     function onClear() {
       setValue("");
@@ -75,22 +73,6 @@ export default defineComponent({
       altInput: true,
       locale: Japanese,
     };
-    // console.group(`${name}////`);
-    // console.log(
-    //   (() => {
-    //     console.group("config");
-    //     console.log(config);
-    //     console.groupEnd();
-
-    //     console.group("defaultPickerConfig");
-    //     console.log(defaultPickerConfig);
-    //     console.groupEnd();
-
-    //     console.group("{ ...defaultPickerConfig, ...config }");
-    //     console.log({ ...defaultPickerConfig, ...config });
-    //     console.groupEnd();
-    //   })()
-    // );
 
     return {
       inputValue,
