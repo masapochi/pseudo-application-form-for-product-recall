@@ -20,7 +20,7 @@
 ### Usage:
 
 ```bash
-git clone
+git clone https://github.com/masapochi/pseudo-application-form-for-product-recall.git
 npm install
 npm run dev
 ```
