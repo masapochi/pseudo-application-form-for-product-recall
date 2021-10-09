@@ -1,3 +1,10 @@
+import dayjs from "dayjs";
+
+const dt = dayjs();
+export const current_date = dt.format("YYYY-MM-DD");
+
+export const minPickupDate = dt.add(5, "day").format("YYYY-MM-DD");
+
 export const PICKUP_TIMES = Object.freeze([
   { name: "時間指定なし" },
   { name: "午前中" },
@@ -9,6 +16,7 @@ export const PICKUP_TIMES = Object.freeze([
 
 const PROFILE = {
   name: "",
+  // zip: "3550300",
   zip: "",
   address: "",
   tel: "",
@@ -85,6 +93,8 @@ const ITEMS = [
 ];
 
 export const INITIAL_FORM = {
+  current_date,
+  minPickupDate,
   ...PROFILE,
   ...RECALL,
   items: ITEMS,

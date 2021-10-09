@@ -4,7 +4,7 @@
       <legend class="h2">Purchased Item Information</legend>
 
       <FormRow>
-        <label :class="formHeadingClass">Purchased Count</label>
+        <label class="col-12 col-md-3 h5">Purchased Count</label>
         <FormBody>
           <table class="table table-sm">
             <thead>
@@ -48,7 +48,7 @@
       <!-- <fieldset v-show="isItemCountFilled"> -->
       <fieldset>
         <FormRow>
-          <label :class="formHeadingClass">Pickup Date</label>
+          <label class="col-12 col-md-3 h5">Pickup Date</label>
           <FormBody>
             <Datepicker
               name="pickup_date"
@@ -60,7 +60,7 @@
 
         <transition name="slide-fade">
           <FormRow v-show="isPickupDateFilled">
-            <label :class="formHeadingClass">Pickup Time</label>
+            <label class="col-12 col-md-3 h5">Pickup Time</label>
             <FormBody>
               <RadioButton
                 v-for="(time, idx) in pickupTimes"
@@ -75,14 +75,14 @@
         </transition>
 
         <FormRow>
-          <label :class="formHeadingClass">Purchased Shop</label>
+          <label class="col-12 col-md-3 h5">Purchased Shop</label>
           <FormBody>
             <TextInput name="purchased_shop" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Purchased Date</label>
+          <label class="col-12 col-md-3 h5">Purchased Date</label>
           <FormBody>
             <Datepicker
               name="purchased_date"
@@ -93,7 +93,7 @@
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Situation</label>
+          <label class="col-12 col-md-3 h5">Situation</label>
           <FormBody>
             <TextareaInput name="situation" />
           </FormBody>
@@ -107,43 +107,75 @@
         <legend class="h2">Your Information</legend>
 
         <FormRow>
-          <label :class="formHeadingClass">Name</label>
+          <label class="col-12 col-md-3 h5">Name</label>
           <FormBody>
             <TextInput name="name" autocomplete="name" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Address</label>
+          <label class="col-12 col-md-3 h5">Address</label>
           <FormBody>
             <div class="input-group w-75 mb-3">
               <span class="input-group-text">〒</span>
-              <TextInput name="zip" autocomplete="postal-code">
-                <button class="btn btn-sm btn-primary" type="button">
-                  <i class="bi bi-search"></i> Search
-                </button>
+              <TextInput
+                id="zip"
+                name="zip"
+                minlength="7"
+                maxlength="8"
+                autocomplete="postal-code"
+              >
               </TextInput>
             </div>
+
+            <template v-if="zip && !errors.zip">
+              <div class="lds-ellipsis" v-if="isWaiting">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+
+              <template v-if="!isWaiting && addresses.length">
+                <p class="text-success">Select from below.</p>
+                <ul class="mb-3 bg-light border-bottom">
+                  <li
+                    class="p-2"
+                    v-for="(address, idx) in addresses"
+                    @click="setAddress(idx)"
+                    style="cursor: pointer"
+                  >
+                    {{ address }}
+                  </li>
+                </ul>
+              </template>
+              <p
+                class="text-danger"
+                v-else-if="!isWaiting && !addresses.length"
+              >
+                {{ resultMessage }}
+              </p>
+            </template>
             <TextInput name="address" autocomplete="address" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Email</label>
+          <label class="col-12 col-md-3 h5">Email</label>
           <FormBody>
             <TextInput name="email" type="text" autocomplete="email" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Email Confirmation</label>
+          <label class="col-12 col-md-3 h5">Email Confirmation</label>
           <FormBody>
             <TextInput name="verify_email" type="text" autocomplete="email" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label :class="formHeadingClass">Tel</label>
+          <label class="col-12 col-md-3 h5">Tel</label>
           <FormBody>
             <TextInput name="tel" autocomplete="tel" />
           </FormBody>
@@ -160,18 +192,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from "vue";
+import { defineComponent, computed, toRefs, ref, watch, onMounted } from "vue";
 import { useForm, useField } from "vee-validate";
 import { validationSchema } from "../validator";
 
 import monthSelectPlugin from "flatpickr/dist/plugins/monthSelect/index";
-import { INITIAL_FORM, PICKUP_TIMES } from "../consts";
+import {
+  current_date,
+  minPickupDate,
+  INITIAL_FORM,
+  PICKUP_TIMES,
+} from "../consts";
 import TextInput from "../components/forms/TextInput.vue";
 import RadioButton from "../components/forms/RadioButton.vue";
 import TextareaInput from "../components/forms/TextareaInput.vue";
 import Datepicker from "../components/forms/Datepicker.vue";
 import FormRow from "../components/forms/FormRow.vue";
 import FormBody from "../components/forms/FormBody.vue";
+
+import { usePostalSearch } from "../hooks/usePostalSearch";
+
+const pickupDateConfig = {
+  minDate: minPickupDate,
+};
+
+const purchasedDateConfig = {
+  maxDate: current_date,
+  plugins: [
+    new monthSelectPlugin({
+      shorthand: true, //defaults to false
+      dateFormat: "Y-m", //defaults to "F Y"
+      altFormat: "Y-m", //defaults to "F Y"
+    }),
+  ],
+};
 
 export default defineComponent({
   components: {
@@ -186,6 +240,8 @@ export default defineComponent({
     const {
       values: form,
       handleSubmit,
+      validateField,
+      setFieldValue,
       errors,
       meta,
     } = useForm<Form>({
@@ -199,27 +255,22 @@ export default defineComponent({
     const isPickupDateFilled = computed(() => !!form.pickup_date);
     const isRecallInfoFilled = computed(() => !!form.purchased_shop);
 
-    const onSubmit = handleSubmit((values) => {
-      console.log(JSON.stringify(values, null, 2));
+    const onSubmit = handleSubmit((values: Form): void => {
+      alert(JSON.stringify(values, null, 2));
     });
 
-    const today = new Date();
-    const pickupDateConfig = {
-      minDate: today.setDate(today.getDate() + 5),
-    };
-    const purchasedDateConfig = {
-      defaultDate: "",
-      maxDate: today,
-      plugins: [
-        new monthSelectPlugin({
-          shorthand: true, //defaults to false
-          dateFormat: "Y-m", //defaults to "F Y"
-          altFormat: "Y-m", //defaults to "F Y"
-        }),
-      ],
-    };
+    const { postalCode, addresses, isWaiting } = usePostalSearch("zip");
 
-    const formHeadingClass = "col-12 col-md-3 h5";
+    const resultMessage = computed(() => {
+      const resultCount = addresses.value.length;
+      if (!resultCount)
+        return "Sorry, Not Found... Please type it in yourself.";
+      return `${resultCount} found`;
+    });
+
+    function setAddress(idx: number): void {
+      setFieldValue("address", addresses.value[idx]);
+    }
 
     return {
       ...toRefs(form),
@@ -232,7 +283,11 @@ export default defineComponent({
       meta,
       pickupDateConfig,
       purchasedDateConfig,
-      formHeadingClass,
+      addresses,
+      resultMessage,
+      setAddress,
+      isWaiting,
+      postalCode,
     };
   },
 });
@@ -254,5 +309,61 @@ export default defineComponent({
 .slide-fade-leave-to {
   transform: translateX(-100px);
   opacity: 0;
+}
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 25px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #000;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
 }
 </style>

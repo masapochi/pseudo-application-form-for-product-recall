@@ -13,7 +13,7 @@
     @input="handleChange"
   />
   <slot />
-  <div class="text-danger">
+  <div class="text-danger w-100">
     {{ errorMessage }}
   </div>
 </template>
