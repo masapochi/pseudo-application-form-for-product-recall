@@ -1,10 +1,17 @@
 <template>
   <form @submit="onSubmit">
-    <fieldset>
-      <legend class="h2">Purchased Item Information</legend>
+    <div class="mb-5">
+      <p>
+        If you would like to exchange items, please fill out and submit the form
+        below.
+      </p>
+      <hr />
+    </div>
+    <fieldset class="mb-5">
+      <legend class="h2 text-center mb-5">Purchased Item Information</legend>
 
       <FormRow>
-        <label class="col-12 col-md-3 h5">Purchased Count</label>
+        <FormLabel label="Purchased Count" is-required />
         <FormBody>
           <table class="table table-sm">
             <thead>
@@ -45,10 +52,10 @@
     </fieldset>
 
     <transition name="slide-fade">
-      <!-- <fieldset v-show="isItemCountFilled"> -->
-      <fieldset>
+      <fieldset class="mb-5" v-show="isItemCountFilled">
+        <!-- <fieldset class="mb-5"> -->
         <FormRow>
-          <label class="col-12 col-md-3 h5">Pickup Date</label>
+          <FormLabel label="Pickup Date" />
           <FormBody>
             <Datepicker
               name="pickup_date"
@@ -60,7 +67,7 @@
 
         <transition name="slide-fade">
           <FormRow v-show="isPickupDateFilled">
-            <label class="col-12 col-md-3 h5">Pickup Time</label>
+            <FormLabel label="Pickup Time" is-required />
             <FormBody>
               <RadioButton
                 v-for="(time, idx) in pickupTimes"
@@ -75,14 +82,14 @@
         </transition>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Purchased Shop</label>
+          <FormLabel label="Purchased Shop" is-required />
           <FormBody>
             <TextInput name="purchased_shop" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Purchased Date</label>
+          <FormLabel label="Purchased Date" />
           <FormBody>
             <Datepicker
               name="purchased_date"
@@ -93,7 +100,7 @@
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Situation</label>
+          <FormLabel label="Usage Situation" />
           <FormBody>
             <TextareaInput name="situation" />
           </FormBody>
@@ -102,19 +109,19 @@
     </transition>
 
     <transition name="slide-fade">
-      <!-- <fieldset v-show="isRecallInfoFilled && isItemCountFilled"> -->
-      <fieldset>
-        <legend class="h2">Your Information</legend>
+      <fieldset class="mb-5" v-show="isRecallInfoFilled && isItemCountFilled">
+        <!-- <fieldset class="mb-5"> -->
+        <legend class="h2 text-center mb-5">Your Information</legend>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Name</label>
+          <FormLabel label="Name" is-required />
           <FormBody>
             <TextInput name="name" autocomplete="name" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Address</label>
+          <FormLabel label="Address" is-required />
           <FormBody>
             <div class="input-group w-75 mb-3">
               <span class="input-group-text">〒</span>
@@ -161,29 +168,27 @@
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Email</label>
+          <FormLabel label="Email" is-required />
           <FormBody>
             <TextInput name="email" type="text" autocomplete="email" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Email Confirmation</label>
+          <FormLabel label="Email Confirmation" is-required />
           <FormBody>
             <TextInput name="verify_email" type="text" autocomplete="email" />
           </FormBody>
         </FormRow>
 
         <FormRow>
-          <label class="col-12 col-md-3 h5">Tel</label>
+          <FormLabel label="Tel" is-required />
           <FormBody>
             <TextInput name="tel" autocomplete="tel" />
           </FormBody>
         </FormRow>
       </fieldset>
     </transition>
-
-    <pre>errors: {{ errors }}</pre>
 
     <div class="text-center" v-if="meta.valid">
       <button class="btn btn-lg btn-primary">Confirm</button>
@@ -208,6 +213,7 @@ import RadioButton from "../components/forms/RadioButton.vue";
 import TextareaInput from "../components/forms/TextareaInput.vue";
 import Datepicker from "../components/forms/Datepicker.vue";
 import FormRow from "../components/forms/FormRow.vue";
+import FormLabel from "../components/forms/FormLabel.vue";
 import FormBody from "../components/forms/FormBody.vue";
 
 import { usePostalSearch } from "../hooks/usePostalSearch";
@@ -234,6 +240,7 @@ export default defineComponent({
     TextareaInput,
     Datepicker,
     FormRow,
+    FormLabel,
     FormBody,
   },
   setup(props, { emit, attrs, slots }) {

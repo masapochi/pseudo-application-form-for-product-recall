@@ -6,17 +6,16 @@ export const current_date = dt.format("YYYY-MM-DD");
 export const minPickupDate = dt.add(5, "day").format("YYYY-MM-DD");
 
 export const PICKUP_TIMES = Object.freeze([
-  { name: "時間指定なし" },
-  { name: "午前中" },
-  { name: "14～16時" },
-  { name: "16～18時" },
-  { name: "18～20時" },
-  { name: "19～21時" },
+  { name: "No time specification" },
+  { name: "In the morning" },
+  { name: "Between 14 ~ 16 p.m." },
+  { name: "Between 16 ~ 18 p.m." },
+  { name: "Between 18 ~ 20 p.m." },
+  { name: "Between 20 ~ 21 p.m." },
 ]);
 
 const PROFILE = {
   name: "",
-  // zip: "3550300",
   zip: "",
   address: "",
   tel: "",
