@@ -2,8 +2,14 @@
   <form @submit="onSubmit">
     <div class="mb-5">
       <p>
+        We have found a defective product that is currently on sale.<br />
+        At this time, we have not confirmed any effects on the human body.
+      </p>
+      <p>
         If you would like to exchange items, please fill out and submit the form
-        below.
+        below.<br />
+        We will come to your home on the date and time you specify and replace
+        the product.
       </p>
       <hr />
     </div>
@@ -53,7 +59,6 @@
 
     <transition name="slide-fade">
       <fieldset class="mb-5" v-show="isItemCountFilled">
-        <!-- <fieldset class="mb-5"> -->
         <FormRow>
           <FormLabel label="Pickup Date" />
           <FormBody>
@@ -110,7 +115,6 @@
 
     <transition name="slide-fade">
       <fieldset class="mb-5" v-show="isRecallInfoFilled && isItemCountFilled">
-        <!-- <fieldset class="mb-5"> -->
         <legend class="h2 text-center mb-5">Your Information</legend>
 
         <FormRow>
@@ -271,7 +275,7 @@ export default defineComponent({
     const resultMessage = computed(() => {
       const resultCount = addresses.value.length;
       if (!resultCount)
-        return "Sorry, Not Found... Please type it in yourself.";
+        return "Sorry, Not Found... Please fill in your address below manually";
       return `${resultCount} found`;
     });
 
@@ -294,7 +298,6 @@ export default defineComponent({
       resultMessage,
       setAddress,
       isWaiting,
-      postalCode,
     };
   },
 });
